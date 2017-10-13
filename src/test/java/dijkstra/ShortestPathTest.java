@@ -14,7 +14,7 @@ import java.util.Map;
 public class ShortestPathTest {
     @Test
     void findShortestTest() {
-        File file = new File("dijkstraTest.txt");
+        File file = new File("TestFiles/dijkstraTest.txt");
         Map<Integer, List<Edge>> reverseGraph;
         try {
             reverseGraph = AdjacencyList.readReverseWeightGraphFromLines(file);
