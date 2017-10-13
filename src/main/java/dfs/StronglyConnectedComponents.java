@@ -5,13 +5,7 @@ import java.util.*;
 public class StronglyConnectedComponents {
     public static List<List<Integer>> find(Map<Integer, List<Integer>> graph, Map<Integer, List<Integer>> reverseGraph,
                                             Integer graphSize){
-        for (Map.Entry<Integer, List<Integer>> entry : reverseGraph.entrySet()) {
-            System.out.print(entry.getKey() + " - " + Arrays.toString(entry.getValue().toArray()));
-            System.out.println();
-        }
         List<Integer> nodeEnumeration = enumerateNodes(reverseGraph, graphSize);
-        System.out.println("---------------");
-        System.out.println(Arrays.toString(nodeEnumeration.toArray()));
         return getConnectedComponents(graph, nodeEnumeration, graphSize);
     }
 
