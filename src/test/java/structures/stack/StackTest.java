@@ -59,4 +59,73 @@ public class StackTest {
         Assert.assertEquals(expected, actual);
         Assert.assertFalse(stack.isEmpty());
     }
+
+    @Test
+    public void stackWorkflowTest() {
+        Stack<String> actual = new Stack<>();
+        java.util.Stack<String> expected = new java.util.Stack<>();
+
+        actual.push("AAA");
+        expected.push("AAA");
+
+        actual.push("BB");
+        expected.push("BB");
+
+        actual.push("CC");
+        expected.push("CC");
+
+        Assert.assertEquals(expected.size(), actual.size());
+        Assert.assertEquals(expected.pop(), actual.pop());
+        Assert.assertEquals(expected.size(), actual.size());
+
+        actual.push("DDD");
+        expected.push("DDD");
+
+        Assert.assertEquals(expected.size(), actual.size());
+        Assert.assertEquals(expected.pop(), actual.pop());
+        Assert.assertEquals(expected.pop(), actual.pop());
+        Assert.assertEquals(expected.size(), actual.size());
+        Assert.assertEquals(expected.peek(), actual.peek());
+
+        actual.push("EE");
+        expected.push("EE");
+
+        Assert.assertEquals(expected.size(), actual.size());
+        Assert.assertEquals(expected.pop(), actual.pop());
+        Assert.assertEquals(expected.pop(), actual.pop());
+        Assert.assertEquals(expected.size(), actual.size());
+
+        actual.push("FFF");
+        expected.push("FFF");
+
+        Assert.assertEquals(expected.size(), actual.size());
+        Assert.assertEquals(expected.peek(), actual.peek());
+        Assert.assertEquals(expected.pop(), actual.pop());
+        Assert.assertEquals(expected.size(), actual.size());
+    }
+
+    @Test
+    public void queuEqualityTest() {
+        Stack<String> first = new Stack<>();
+        Stack<String> second = new Stack<>();
+
+        first.push("AAA");
+        second.push("AAA");
+
+        first.push("BB");
+        second.push("BB");
+
+        first.push("CC");
+        second.push("CC");
+
+        Assert.assertTrue(first.equals(second));
+        Assert.assertEquals(first.hashCode(), second.hashCode());
+
+        first.pop();
+        second.pop();
+
+        Assert.assertTrue(first.equals(second));
+        Assert.assertEquals(first.hashCode(), second.hashCode());
+
+    }
 }
