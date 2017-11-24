@@ -106,7 +106,7 @@ public class QueueTests {
     }
 
     @Test
-    public void queuEqualityTest() {
+    public void queueEqualityTest() {
         Queue<String> first = new Queue<>();
         Queue<String> second = new Queue<>();
 
