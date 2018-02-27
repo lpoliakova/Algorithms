@@ -9,28 +9,28 @@ import java.util.PriorityQueue;
 public class HeapTests {
 
     @Test
-    public void queueEmpty() {
+    public void heapEmpty() {
         Heap<String> heap = new Heap<>();
 
         Assert.assertTrue(heap.isEmpty());
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void queueEmptyPeekTest() {
+    public void heapEmptyPeekTest() {
         Heap<String> heap = new Heap<>();
 
         heap.peek();
     }
 
     @Test(expected = NoSuchElementException.class)
-    public void queueEmptyPollTest() {
+    public void heapEmptyPollTest() {
         Heap<String> heap = new Heap<>();
 
         heap.poll();
     }
 
     @Test
-    public void queueOfferPollTest() {
+    public void heapOfferPollTest() {
         Heap<String> heap = new Heap<>();
 
         String expected = "AAA";
@@ -46,7 +46,7 @@ public class HeapTests {
     }
 
     @Test
-    public void queueOfferPeekTest() {
+    public void heapOfferPeekTest() {
         Heap<String> heap = new Heap<>();
 
         String expected = "AAA";
@@ -62,7 +62,7 @@ public class HeapTests {
     }
 
     @Test
-    public void queueWorkflowTest() {
+    public void heapWorkflowTest() {
         Heap<Integer> actual = new Heap<>();
         PriorityQueue<Integer> expected = new PriorityQueue<>();
 
@@ -106,7 +106,7 @@ public class HeapTests {
     }
 
     @Test
-    public void queueEqualityTest() {
+    public void heapEqualityTest() {
         Heap<Integer> first = new Heap<>();
         Heap<Integer> second = new Heap<>();
 

@@ -1,8 +1,7 @@
 package graphs.dfs;
 
 import graphs.input.AdjacencyList;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,9 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.junit.Assert.assertEquals;
+
 public class StronglyConnectedComponentsTest {
     @Test
-    void findComponentsTest(){
+    public void findComponentsTest(){
         File file = new File("TestFiles/connectedComponentsTest.txt");
         Map<Integer, List<Integer>> graph;
         Map<Integer, List<Integer>> reverseGraph;
@@ -27,6 +28,6 @@ public class StronglyConnectedComponentsTest {
         List<List<Integer>> scc = StronglyConnectedComponents.find(graph, reverseGraph, 875714);
         List<Integer> expected = Arrays.asList(434821, 968, 459, 313, 211);
         List<Integer> actual = scc.stream().map(List::size).sorted((e1,e2) -> -e1.compareTo(e2)).limit(5).collect(Collectors.toList());
-        Assertions.assertEquals(expected, actual);
+        assertEquals(expected, actual);
     }
 }
