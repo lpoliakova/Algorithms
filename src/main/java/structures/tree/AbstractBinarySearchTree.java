@@ -7,8 +7,8 @@ public abstract class AbstractBinarySearchTree<T extends Comparable<T>> implemen
         return root;
     }
 
-    void initRoot(T element) {
-        root = new TreeNode<>(element);
+    void initRoot(TreeNode<T> newRoot) {
+        root = newRoot;
     }
 
     void deleteRoot() {
@@ -160,6 +160,96 @@ public abstract class AbstractBinarySearchTree<T extends Comparable<T>> implemen
     @Override
     public boolean isEmpty() {
         return root == null;
+    }
+
+    TreeNode<T> findInsertionNode(T element) {
+        TreeNode<T> currentNode = getRoot();
+
+        while(currentNode != null) {
+            if (currentNode.getElement().equals(element)) {
+                throw new IllegalArgumentException(ExceptionMessages.ALREADY_IN_TREE_MESSAGE);
+            }
+
+            if (currentNode.getElement().compareTo(element) > 0) {
+                if (currentNode.hasLeftChild()) {
+                    currentNode = currentNode.getLeftChild();
+                } else {
+                    return currentNode;
+                }
+            } else if (currentNode.getElement().compareTo(element) < 0) {
+                if (currentNode.hasRightChild()) {
+                    currentNode = currentNode.getRightChild();
+                } else {
+                    return currentNode;
+                }
+            } else {
+                throw new IllegalArgumentException(ExceptionMessages.EQUALS_AND_COMPARE_MISMATCH_MESSAGE);
+            }
+        }
+
+        return null;
+    }
+
+    TreeNode<T> checkNodeForDeletionIfItHasTwoChildren(TreeNode<T> nodeForDeletion) {
+        if (nodeForDeletion.hasLeftChild() && nodeForDeletion.hasRightChild()) {
+            TreeNode<T> minNode = nodeForDeletion.getRightChild();
+
+            while(minNode.hasLeftChild()) {
+                minNode = minNode.getLeftChild();
+            }
+
+            nodeForDeletion.setElement(minNode.getElement());
+
+            return minNode;
+        }
+
+        return nodeForDeletion;
+    }
+
+    void deleteNode(TreeNode<T> nodeForDeletion) {
+        if (!nodeForDeletion.hasLeftChild() && !nodeForDeletion.hasRightChild()) {
+            if (!nodeForDeletion.hasParent()) {
+                deleteRoot();
+                return;
+            }
+
+            replaceForParent(nodeForDeletion, null);
+        } else if (nodeForDeletion.hasLeftChild()) {
+            nodeForDeletion.getLeftChild().setParent(nodeForDeletion.getParent());
+            replaceForParent(nodeForDeletion, nodeForDeletion.getLeftChild());
+        } else if (nodeForDeletion.hasRightChild()) {
+            nodeForDeletion.getRightChild().setParent(nodeForDeletion.getParent());
+            replaceForParent(nodeForDeletion, nodeForDeletion.getRightChild());
+        }
+    }
+
+    private void replaceForParent(TreeNode<T> nodeForDeletion, TreeNode<T> movingChild) {
+        if (nodeForDeletion.getParent().getElement().compareTo(nodeForDeletion.getElement()) < 0) {
+            nodeForDeletion.getParent().setRightChild(movingChild);
+        } else if (nodeForDeletion.getParent().getElement().compareTo(nodeForDeletion.getElement()) > 0) {
+            nodeForDeletion.getParent().setLeftChild(movingChild);
+        } else {
+            throw new IllegalArgumentException(ExceptionMessages.EQUALS_AND_COMPARE_MISMATCH_MESSAGE);
+        }
+        decrementNodeSizes(nodeForDeletion.getParent());
+    }
+    
+    void incrementNodeSizes(TreeNode<T> startNode) {
+        TreeNode<T> currentNode = startNode;
+
+        while (currentNode != null) {
+            currentNode.incrementNodeSize();
+            currentNode = currentNode.getParent();
+        }
+    }
+
+    void decrementNodeSizes(TreeNode<T> startNode) {
+        TreeNode<T> currentNode = startNode;
+
+        while (currentNode != null) {
+            currentNode.decrementNodeSize();
+            currentNode = currentNode.getParent();
+        }
     }
 
     TreeNode<T> getNodeForElement(T element) {
