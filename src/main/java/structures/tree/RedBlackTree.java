@@ -1,13 +1,11 @@
 package structures.tree;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 public class RedBlackTree<T extends Comparable<T>> extends AbstractBinarySearchTree<T> {
 
     @Override
     public void insert(T element) {
         if (isEmpty()) {
-            initRoot(new RedBlackTreeNode<T>(element));
+            setRoot(new RedBlackTreeNode<T>(element));
             return;
         }
 
@@ -25,7 +23,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractBinarySearchT
 
         nodeForDeletion = checkNodeForDeletionIfItHasTwoChildren(nodeForDeletion);
         deleteNode(nodeForDeletion);
-        //TODO: recolor nodes
+        deleteBackwardPropagation((RedBlackTreeNode<T>)nodeForDeletion);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractBinarySearchT
 
         nodeForDeletion = checkNodeForDeletionIfItHasTwoChildren(nodeForDeletion);
         deleteNode(nodeForDeletion);
-        //TODO: recolor nodes
+        deleteBackwardPropagation((RedBlackTreeNode<T>)nodeForDeletion);
     }
 
     private void localInsertElement(TreeNode<T> parentForInsert, T element) {
@@ -87,6 +85,84 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractBinarySearchT
         parent.setBlack();
     }
 
+    private void deleteBackwardPropagation(RedBlackTreeNode<T> deletedNode) {
+        if (deletedNode.isRed()) {
+            return;
+        }
+
+        // deletedNode is black
+        RedBlackTreeNode<T> childOfDeletedNode = null;
+        if (deletedNode.hasRightChild()) {
+            childOfDeletedNode = (RedBlackTreeNode<T>)deletedNode.getRightChild();
+        } else if (deletedNode.hasLeftChild()) {
+            childOfDeletedNode = (RedBlackTreeNode<T>)deletedNode.getLeftChild();
+        }
+        if (childOfDeletedNode != null && childOfDeletedNode.isRed()) {
+            childOfDeletedNode.setBlack();
+            return;
+        }
+
+        // childOfDeletedNode is double black
+        if (deletedNode.hasParent()) {
+            doubleBlackPropagation((RedBlackTreeNode<T>) deletedNode.getParent(), isLeftChild(deletedNode.getParent(), deletedNode));
+        }
+    }
+
+    private void doubleBlackPropagation(RedBlackTreeNode<T> parent, boolean doubleBlackIsLeft) {
+        RedBlackTreeNode<T> sibling;
+        if (doubleBlackIsLeft) {
+            sibling = (RedBlackTreeNode<T>)parent.getRightChild();
+        } else {
+            sibling = (RedBlackTreeNode<T>)parent.getLeftChild();
+        }
+
+        if (sibling.isRed()) {
+            rotation(parent, sibling);
+            sibling.setBlack();
+            parent.setRed();
+            doubleBlackPropagation(parent, doubleBlackIsLeft);
+            return;
+        }
+
+        // sibling is black
+        RedBlackTreeNode<T> leftChildOfSibling = (RedBlackTreeNode<T>)sibling.getLeftChild();
+        RedBlackTreeNode<T> rightChildOfSibling = (RedBlackTreeNode<T>)sibling.getRightChild();
+        if ((leftChildOfSibling == null || leftChildOfSibling.isBlack())
+                && (rightChildOfSibling == null || rightChildOfSibling.isBlack())) {
+            sibling.setRed();
+            if (parent.isRed()) {
+                parent.setBlack();
+            } else {
+                if (parent.hasParent()) {
+                    doubleBlackPropagation((RedBlackTreeNode<T>) parent.getParent(), isLeftChild(parent.getParent(), parent));
+                }
+            }
+            return;
+        }
+
+        // at least one child of sibling is red
+        boolean isLeftToRight = doubleBlackIsLeft && (rightChildOfSibling == null || rightChildOfSibling.isBlack());
+        boolean isRightToLeft = !doubleBlackIsLeft && (leftChildOfSibling == null || leftChildOfSibling.isBlack());
+        if (isLeftToRight || isRightToLeft) {
+            RedBlackTreeNode<T> rotatingChild = doubleBlackIsLeft ? leftChildOfSibling : rightChildOfSibling;
+            rotation(sibling, rotatingChild);
+            sibling.setRed();
+            rotatingChild.setBlack();
+            doubleBlackPropagation(parent, doubleBlackIsLeft);
+            return;
+        }
+
+        // nearest child of sibling is null or black, farthest is red
+        rotation(parent, sibling);
+        if (parent.isBlack()) {
+            if (doubleBlackIsLeft) {
+                rightChildOfSibling.setBlack();
+            } else {
+                leftChildOfSibling.setBlack();
+            }
+        }
+    }
+
     private void rotation(TreeNode<T> parent, TreeNode<T> child) {
         boolean rotateLeft = true;
 
@@ -112,6 +188,8 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractBinarySearchT
             } else {
                 throw new IllegalArgumentException(ExceptionMessages.EQUALS_AND_COMPARE_MISMATCH_MESSAGE);
             }
+        } else {
+            setRoot(child);
         }
 
         child.setParent(parent.getParent());
@@ -122,11 +200,11 @@ public class RedBlackTree<T extends Comparable<T>> extends AbstractBinarySearchT
         }
     }
 
-    boolean isLeftChild(TreeNode<T> parent, TreeNode<T> child) {
+    private boolean isLeftChild(TreeNode<T> parent, TreeNode<T> child) {
         return parent.getElement().compareTo(child.getElement()) > 0;
     }
 
-    boolean isRightChild(TreeNode<T> parent, TreeNode<T> child) {
+    private boolean isRightChild(TreeNode<T> parent, TreeNode<T> child) {
         return parent.getElement().compareTo(child.getElement()) < 0;
     }
 }

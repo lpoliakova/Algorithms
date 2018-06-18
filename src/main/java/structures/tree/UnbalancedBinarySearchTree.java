@@ -4,7 +4,7 @@ public class UnbalancedBinarySearchTree<T extends Comparable<T>> extends Abstrac
     @Override
     public void insert(T element) {
         if (isEmpty()) {
-            initRoot(new TreeNode<>(element));
+            setRoot(new TreeNode<>(element));
             return;
         }
 

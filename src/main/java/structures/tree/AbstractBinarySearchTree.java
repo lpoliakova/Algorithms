@@ -7,7 +7,7 @@ public abstract class AbstractBinarySearchTree<T extends Comparable<T>> implemen
         return root;
     }
 
-    void initRoot(TreeNode<T> newRoot) {
+    void setRoot(TreeNode<T> newRoot) {
         root = newRoot;
     }
 
